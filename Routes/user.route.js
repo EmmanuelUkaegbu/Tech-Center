@@ -13,9 +13,9 @@ const {
 } = require("../controllers/user.controller.js");
 router.post("/register", register);
 router.post("/login", login);
+router.get("/allusers", getAllUsers);
 router.get("/stats", getUserStats);
 
-router.get("/allusers", getAllUsers);
 router.get("/:id", getUserById);
 router.delete("/:id", deleteUser);
 router.put("/:id", updateUser);
