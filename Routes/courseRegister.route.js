@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect } = require("../middleware/auth");
 
 const {
   registerCourse,
@@ -13,7 +14,7 @@ const {
 } = require("../controllers/courseRegister.controller.js");
 
 // Student
-router.post("/", registerCourse);
+router.post("/", protect, registerCourse);
 
 // Admin
 router.get("/get", getAllRegistrations);

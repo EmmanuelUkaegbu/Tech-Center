@@ -69,15 +69,16 @@ exports.login = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid email or password" });
     }
+
     let token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
       process.env.JWT,
       {
-        expiresIn: "1hr",
+        expiresIn: "1h",
       },
     );
     res.status(201).json({
-      sucess: true,
+      success: true,
       message: "Login Successful",
       token,
       user,
