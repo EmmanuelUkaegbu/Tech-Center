@@ -198,34 +198,3 @@ exports.updateRegistration = async (req, res) => {
     });
   }
 };
-exports.getStudentDashboard = async (req, res) => {
-  try {
-    const studentId = req.user._id;
-
-    // Get logged in student
-    const student = await User.findById(studentId).select("-password");
-
-    if (!student) {
-      return res.status(404).json({
-        success: false,
-        message: "Student not found",
-      });
-    }
-
-    // Get all registered courses
-    const registrations = await RegisterCourse.find({
-      student: studentId,
-    }).populate("course");
-
-    res.status(200).json({
-      success: true,
-      student,
-      courses: registrations,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};

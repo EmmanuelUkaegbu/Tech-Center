@@ -4,7 +4,7 @@ const { protect } = require("../middlewire/auth.js");
 
 const {
   registerCourse,
-  getStudentDashboard,
+
   getAllRegistrations,
   getRegistration,
 
@@ -15,8 +15,6 @@ const {
 
 // Student
 router.post("/", protect, registerCourse);
-
-router.get("/dashboard", protect, getStudentDashboard);
 
 // Admin
 router.get("/get", getAllRegistrations);
