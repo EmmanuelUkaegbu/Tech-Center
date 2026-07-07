@@ -3,7 +3,7 @@ const Course = require("../models/course.model.js");
 
 exports.createCourse = async (req, res) => {
   try {
-    let { title, description, duration, level } = req.body;
+    let { title, description, duration } = req.body;
     const existingCourse = await Course.findOne({ title });
     if (existingCourse)
       return res.status(400).json({
@@ -14,7 +14,6 @@ exports.createCourse = async (req, res) => {
       title,
       description,
       duration,
-      level,
     });
     res.status(201).json({
       success: true,

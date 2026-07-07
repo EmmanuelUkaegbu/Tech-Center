@@ -31,6 +31,25 @@ const registrationSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    learningMode: {
+      type: String,
+      enum: ["Online", "Physical", "Hybrid"],
+      default: "",
+    },
+    batch: {
+      type: String,
+      enum: ["Morning", "Afternoon", "Evening", "Weekend"],
+      default: "",
+    },
+    startDate: {
+      type: Date,
+      default: Date.now,
+    },
+    level: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      default: "Beginner",
+    },
 
     completionDate: {
       type: Date,
