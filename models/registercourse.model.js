@@ -51,6 +51,8 @@ const registrationSchema = new mongoose.Schema(
       default: "Beginner",
     },
 
+    goal: { type: String, default: "" },
+
     completionDate: {
       type: Date,
     },
