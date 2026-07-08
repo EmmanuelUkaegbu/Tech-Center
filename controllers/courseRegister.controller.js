@@ -4,7 +4,7 @@ const User = require("../models/user.model.js");
 
 exports.registerCourse = async (req, res) => {
   try {
-    const student = req.user._id;
+    const { student } = req.body;
     const { course, learningMode, batch, startDate, level, goal } = req.body;
     const existingCourse = await Course.findOne({ title: course });
 

@@ -33,12 +33,12 @@ const registrationSchema = new mongoose.Schema(
     },
     learningMode: {
       type: String,
-      enum: ["Online", "Physical", "Hybrid"],
+
       default: "",
     },
     batch: {
       type: String,
-      enum: ["Morning", "Afternoon", "Evening", "Weekend"],
+
       default: "",
     },
     startDate: {
@@ -47,7 +47,7 @@ const registrationSchema = new mongoose.Schema(
     },
     level: {
       type: String,
-      enum: ["Beginner", "Intermediate", "Advanced"],
+
       default: "Beginner",
     },
 
