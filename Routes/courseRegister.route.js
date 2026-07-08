@@ -7,7 +7,7 @@ const {
 
   getAllRegistrations,
   getRegistration,
-
+  getMyRegistrations,
   deleteRegistration,
   getRegistrationStats,
   updateRegistration,
