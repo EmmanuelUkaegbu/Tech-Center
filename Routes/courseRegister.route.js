@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect, verifyToken } = require("../middlewire/auth.js");
+const { protect } = require("../middlewire/auth.js");
 
 const {
   registerCourse,
@@ -15,7 +15,7 @@ const {
 
 // Student
 router.post("/", protect, registerCourse);
-router.get("/my", verifyToken, getMyRegistrations);
+
 // Admin
 router.get("/get", getAllRegistrations);
 router.get("/stats", getRegistrationStats);

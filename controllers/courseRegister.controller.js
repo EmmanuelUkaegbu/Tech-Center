@@ -198,24 +198,3 @@ exports.updateRegistration = async (req, res) => {
     });
   }
 };
-
-exports.getMyRegistrations = async (req, res) => {
-  try {
-    const registrations = await RegisterCourse.find({
-      student: req.user.id,
-    })
-      .populate("course")
-      .populate("student", "userName email");
-
-    res.status(200).json({
-      success: true,
-      count: registrations.length,
-      registrations,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
