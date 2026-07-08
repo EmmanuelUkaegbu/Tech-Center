@@ -28,13 +28,15 @@ exports.registerCourse = async (req, res) => {
     }
 
     const registration = await RegisterCourse.create({
-      student,
-      course: existingCourse._id,
-      learningMode,
-      batch,
-      startDate,
-      level,
-      goal,
+      student: req.user.id,
+
+      course: req.body.course,
+
+      learningMode: req.body.learningMode,
+
+      level: req.body.level,
+
+      batch: req.body.batch,
     });
 
     res.status(201).json({
@@ -198,29 +200,20 @@ exports.updateRegistration = async (req, res) => {
     });
   }
 };
-exports.getRegistrationByStudent = async (req, res) => {
+const getMyRegistrations = async (req, res) => {
   try {
     const registrations = await RegisterCourse.find({
-      student: req.params.id,
-    })
-      .populate("student", "name email")
-      .populate("course");
-
-    if (!registrations.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No registrations found",
-      });
-    }
+      student: req.user.id,
+    }).populate("student", "userName email");
 
     res.status(200).json({
       success: true,
       registrations,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };
