@@ -198,13 +198,20 @@ exports.updateRegistration = async (req, res) => {
     });
   }
 };
-exports.getMyRegistrations = async (req, res) => {
+exports.getRegistrationByStudent = async (req, res) => {
   try {
     const registrations = await RegisterCourse.find({
-      student: req.user.id,
+      student: req.params.id,
     })
-      .populate("student", "name  email")
+      .populate("student", "name email")
       .populate("course");
+
+    if (!registrations.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No registrations found",
+      });
+    }
 
     res.status(200).json({
       success: true,
