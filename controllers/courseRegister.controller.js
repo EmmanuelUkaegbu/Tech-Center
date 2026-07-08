@@ -28,15 +28,13 @@ exports.registerCourse = async (req, res) => {
     }
 
     const registration = await RegisterCourse.create({
-      student: req.user.id,
-
-      course: req.body.course,
-
-      learningMode: req.body.learningMode,
-
-      level: req.body.level,
-
-      batch: req.body.batch,
+      student,
+      course: existingCourse._id,
+      learningMode,
+      batch,
+      startDate,
+      level,
+      goal,
     });
 
     res.status(201).json({
@@ -197,23 +195,6 @@ exports.updateRegistration = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message,
-    });
-  }
-};
-const getMyRegistrations = async (req, res) => {
-  try {
-    const registrations = await RegisterCourse.find({
-      student: req.user.id,
-    }).populate("student", "userName email");
-
-    res.status(200).json({
-      success: true,
-      registrations,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
     });
   }
 };
