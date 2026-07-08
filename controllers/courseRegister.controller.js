@@ -198,3 +198,15 @@ exports.updateRegistration = async (req, res) => {
     });
   }
 };
+exports.getRegistrationByStudent = async (req, res) => {
+  const registrations = await RegisterCourse.find({
+    student: req.params.id,
+  })
+    .populate("student")
+    .populate("course");
+
+  res.json({
+    success: true,
+    registrations,
+  });
+};
