@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middlewire/auth.js");
-const verifyToken = require("../middlewire/verifyToken.js");
+const { verifyToken } = require("../middlewire/verifyToken.js");
 const {
   registerCourse,
 
