@@ -15,7 +15,7 @@ const {
 
 // Student
 router.post("/", protect, registerCourse);
-
+router.get("/my", verifyToken, getMyRegistrations);
 // Admin
 router.get("/get", getAllRegistrations);
 router.get("/stats", getRegistrationStats);
