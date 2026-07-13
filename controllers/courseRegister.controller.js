@@ -28,7 +28,7 @@ exports.registerCourse = async (req, res) => {
     }
 
     const registration = await RegisterCourse.create({
-      student,
+      student: user._id,
       course: existingCourse._id,
       learningMode,
       batch,
@@ -52,7 +52,7 @@ exports.registerCourse = async (req, res) => {
 exports.getAllRegistrations = async (req, res) => {
   try {
     const registrations = await RegisterCourse.find()
-      .populate("student", "firstName lastName email  gender")
+      .populate("student")
       .populate("course");
 
     res.status(200).json({
@@ -70,8 +70,9 @@ exports.getAllRegistrations = async (req, res) => {
 
 exports.getRegistrationById = async (req, res) => {
   try {
-    const registration = await Product.findById(req.params.id)
+    const registration = await RegisterCourse.findById({ student: user._id })
       .populate("student", "firstName lastName email  gender")
+      .populate("course")
       .sort({ createdAt: -1 });
     if (!registration) {
       return res.status(404).json({
@@ -196,16 +197,4 @@ exports.updateRegistration = async (req, res) => {
       message: error.message,
     });
   }
-};
-exports.getRegistrationByStudent = async (req, res) => {
-  const registrations = await RegisterCourse.find({
-    student: req.params.id,
-  })
-    .populate("student")
-    .populate("course");
-
-  res.json({
-    success: true,
-    registrations,
-  });
 };
