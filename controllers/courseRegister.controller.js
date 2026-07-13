@@ -28,7 +28,7 @@ exports.registerCourse = async (req, res) => {
     }
 
     const registration = await RegisterCourse.create({
-      student: user._id,
+      student,
       course: existingCourse._id,
       learningMode,
       batch,
@@ -52,7 +52,7 @@ exports.registerCourse = async (req, res) => {
 exports.getAllRegistrations = async (req, res) => {
   try {
     const registrations = await RegisterCourse.find()
-      .populate("student")
+      .populate("student", "firstName lastName email")
       .populate("course");
 
     res.status(200).json({
@@ -68,21 +68,21 @@ exports.getAllRegistrations = async (req, res) => {
   }
 };
 
-exports.getRegistrationById = async (req, res) => {
+exports.getRegistration = async (req, res) => {
   try {
-    const registration = await RegisterCourse.findById({ student: user._id })
-      .populate("student", "firstName lastName email  gender")
-      .populate("course")
-      .sort({ createdAt: -1 });
+    const registration = await RegisterCourse.findById(req.params.id)
+      .populate("student", "firstName lastName email")
+      .populate("course");
+
     if (!registration) {
       return res.status(404).json({
         success: false,
         message: "Registration not found",
       });
     }
+
     res.status(200).json({
       success: true,
-      message: " Registration retrived sucessfully",
       registration,
     });
   } catch (error) {
@@ -190,6 +190,34 @@ exports.updateRegistration = async (req, res) => {
       success: true,
       message: "Registration updated successfully",
       updatedRegistration,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+exports.getRegistrationById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const registrations = await RegisterCourse.find({ student: id })
+      .populate("student", "firstName lastName email gender")
+      .populate("course")
+      .sort({ createdAt: -1 });
+
+    if (registrations.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No registered courses found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Registered courses retrieved successfully.",
+      registrations,
     });
   } catch (error) {
     res.status(500).json({

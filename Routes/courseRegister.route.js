@@ -6,7 +6,7 @@ const {
 
   getAllRegistrations,
   getRegistration,
-  getRegistrationByStudent,
+  getRegistrationById,
   deleteRegistration,
   getRegistrationStats,
   updateRegistration,
@@ -14,7 +14,8 @@ const {
 
 // Student
 router.post("/", registerCourse);
-router.get("/student/:id", getRegistrationByStudent);
+
+router.get("/student/:id", getRegistrationById);
 // Admin
 router.get("/get", getAllRegistrations);
 router.get("/stats", getRegistrationStats);
