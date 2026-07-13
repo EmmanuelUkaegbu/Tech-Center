@@ -28,10 +28,11 @@ app.get("/", (req, res) => {
 app.use("/api/auth", userRoute);
 app.use("/api/courses", courseRoute);
 app.use("/api/registrations", RegisterCourseRoute);
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
 mongoose
   .connect(API)
   .then(() => console.log("Connected to MongoDB"))
   .catch(() => console.error("Error connecting to MongoDB:"));
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
