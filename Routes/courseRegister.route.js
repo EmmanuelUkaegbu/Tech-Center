@@ -15,7 +15,7 @@ const {
 // Student
 router.post("/", registerCourse);
 
-router.get("/my-courses", getRegistrationById);
+router.get("/student/:id", getRegistrationById);
 // Admin
 router.get("/get", getAllRegistrations);
 router.get("/stats", getRegistrationStats);

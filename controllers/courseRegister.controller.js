@@ -1,37 +1,45 @@
 const RegisterCourse = require("../models/registercourse.model.js");
 const Course = require("../models/course.model.js");
 const User = require("../models/user.model.js");
-
 const jwt = require("jsonwebtoken");
-
 exports.registerCourse = async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
+    const { student, course, learningMode, batch, startDate, level, goal } =
+      req.body;
+    const existingCourse = await Course.findOne({ title: course });
 
-    if (!authHeader) {
-      return res.status(401).json({
+    if (!existingCourse) {
+      return res.status(404).json({
         success: false,
-        message: "No token provided",
+        message: "Course not found",
       });
     }
 
-    const token = authHeader.split(" ")[1];
+    const alreadyRegistered = await RegisterCourse.findOne({
+      student,
+      course: existingCourse._id,
+    });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (alreadyRegistered) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already registered for this course",
+      });
+    }
 
-    const studentId = decoded.userId;
-
-    // Use studentId when creating the registration
     const registration = await RegisterCourse.create({
-      student: studentId,
-      course: req.body.course,
-      level: req.body.level,
-      batch: req.body.batch,
-      learningMode: req.body.learningMode,
+      student,
+      course: existingCourse._id,
+      learningMode,
+      batch,
+      startDate,
+      level,
+      goal,
     });
 
     res.status(201).json({
       success: true,
+      message: "Course registered successfully",
       registration,
     });
   } catch (error) {
@@ -41,11 +49,10 @@ exports.registerCourse = async (req, res) => {
     });
   }
 };
-
 exports.getAllRegistrations = async (req, res) => {
   try {
     const registrations = await RegisterCourse.find()
-      .populate("student", "firstName lastName email")
+      .populate("student", "firstName lastName email gender")
       .populate("course");
 
     res.status(200).json({
@@ -64,7 +71,7 @@ exports.getAllRegistrations = async (req, res) => {
 exports.getRegistration = async (req, res) => {
   try {
     const registration = await RegisterCourse.findById(req.params.id)
-      .populate("student", "firstName lastName email")
+      .populate("student", "firstName lastName email gender")
       .populate("course");
 
     if (!registration) {
@@ -177,7 +184,7 @@ exports.updateRegistration = async (req, res) => {
       },
     )
       .populate("course")
-      .populate("student", "name email");
+      .populate("student", "firstName lastName email gender");
 
     res.status(200).json({
       success: true,
@@ -194,19 +201,25 @@ exports.updateRegistration = async (req, res) => {
 
 exports.getRegistrationById = async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader.split(" ")[1];
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { studentId } = req.params;
 
     const registrations = await RegisterCourse.find({
-      student: decoded.userId,
+      student: studentId,
     })
       .populate("student", "firstName lastName email gender")
-      .populate("course");
+      .populate("course")
+      .sort({ createdAt: -1 });
+
+    if (registrations.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No registered courses found for this student",
+      });
+    }
 
     res.status(200).json({
       success: true,
+      message: "Registered courses retrieved successfully",
       registrations,
     });
   } catch (error) {
