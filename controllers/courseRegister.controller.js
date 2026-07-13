@@ -2,44 +2,36 @@ const RegisterCourse = require("../models/registercourse.model.js");
 const Course = require("../models/course.model.js");
 const User = require("../models/user.model.js");
 
+const jwt = require("jsonwebtoken");
+
 exports.registerCourse = async (req, res) => {
   try {
-    const { student, course, learningMode, batch, startDate, level, goal } =
-      req.body;
-    const existingCourse = await Course.findOne({ title: course });
+    const authHeader = req.headers.authorization;
 
-    if (!existingCourse) {
-      return res.status(404).json({
+    if (!authHeader) {
+      return res.status(401).json({
         success: false,
-        message: "Course not found",
+        message: "No token provided",
       });
     }
 
-    const alreadyRegistered = await RegisterCourse.findOne({
-      student,
-      course: existingCourse._id,
-    });
+    const token = authHeader.split(" ")[1];
 
-    if (alreadyRegistered) {
-      return res.status(400).json({
-        success: false,
-        message: "You have already registered for this course",
-      });
-    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    const studentId = decoded.userId;
+
+    // Use studentId when creating the registration
     const registration = await RegisterCourse.create({
-      student,
-      course: existingCourse._id,
-      learningMode,
-      batch,
-      startDate,
-      level,
-      goal,
+      student: studentId,
+      course: req.body.course,
+      level: req.body.level,
+      batch: req.body.batch,
+      learningMode: req.body.learningMode,
     });
 
     res.status(201).json({
       success: true,
-      message: "Course registered successfully",
       registration,
     });
   } catch (error) {
@@ -49,6 +41,7 @@ exports.registerCourse = async (req, res) => {
     });
   }
 };
+
 exports.getAllRegistrations = async (req, res) => {
   try {
     const registrations = await RegisterCourse.find()
@@ -198,25 +191,22 @@ exports.updateRegistration = async (req, res) => {
     });
   }
 };
+
 exports.getRegistrationById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
 
-    const registrations = await RegisterCourse.find({ student: id })
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const registrations = await RegisterCourse.find({
+      student: decoded.userId,
+    })
       .populate("student", "firstName lastName email gender")
-      .populate("course")
-      .sort({ createdAt: -1 });
-
-    if (registrations.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No registered courses found.",
-      });
-    }
+      .populate("course");
 
     res.status(200).json({
       success: true,
-      message: "Registered courses retrieved successfully.",
       registrations,
     });
   } catch (error) {
