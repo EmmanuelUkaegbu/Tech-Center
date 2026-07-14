@@ -19,7 +19,8 @@ exports.registerCourse = async (req, res) => {
       student,
       course: existingCourse._id,
     });
-
+    console.log(req.body);
+    console.log(existingCourse);
     if (alreadyRegistered) {
       return res.status(400).json({
         success: false,
@@ -193,35 +194,6 @@ exports.updateRegistration = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-exports.getRegistrationByUserId = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const registrations = await RegisterCourse.find({
-      student: userId,
-    })
-      .populate("student", "firstName lastName email gender")
-      .populate("course");
-
-    if (registrations.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No registrations found for this user",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      registrations,
-    });
-  } catch (error) {
-    return res.status(500).json({
       success: false,
       message: error.message,
     });
