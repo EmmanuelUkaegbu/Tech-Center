@@ -15,7 +15,7 @@ const {
 // Student
 router.post("/", registerCourse);
 
-router.get("/user/:userId", registrationController.getRegistrationByUserId);
+router.get("/user/:userId", getRegistrationByUserId);
 // Admin
 router.get("/get", getAllRegistrations);
 router.get("/stats", getRegistrationStats);
