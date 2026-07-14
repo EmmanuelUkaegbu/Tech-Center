@@ -199,31 +199,29 @@ exports.updateRegistration = async (req, res) => {
   }
 };
 
-exports.getRegistrationById = async (req, res) => {
+exports.getRegistrationByUserId = async (req, res) => {
   try {
-    const { studentId } = req.params;
+    const { userId } = req.params;
 
     const registrations = await RegisterCourse.find({
-      student: studentId,
+      student: userId,
     })
       .populate("student", "firstName lastName email gender")
-      .populate("course")
-      .sort({ createdAt: -1 });
+      .populate("course");
 
     if (registrations.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "No registered courses found for this student",
+        message: "No registrations found for this user",
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Registered courses retrieved successfully",
       registrations,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
